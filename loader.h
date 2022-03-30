@@ -41,3 +41,36 @@ class Section {
  uint8_t *bytes;
 };//end Class Section
 
+class Binary {
+ public:
+  enum BinaryType{
+    BIN_TYPE_AUTO=0,
+    BIN_TYPE_ELF = 1,
+    BIN_TYPE_PE = 2,
+
+  };//enum Binary Type
+
+  enum BinaryArch {
+    ARCH_NONE = 0,
+    ARCH_X86 = 1
+  };// enum Binary Arch
+
+ Binary() : type(BIN_TYPE_AUTO), arch(ARCH_NONE), bits(0), entry(0){}
+
+  Section *get_text_section()
+  { for (auto &s : sections) if(s.name == ".text") return &s;return NULL;}
+
+  std::string 	filename;
+  BinaryType 	type;
+  std::string 	type_str;
+  BinaryArch	arch;
+  std::string	arch_str;
+  unsigned	bits;
+  uint64_t	entry;
+  std::vector<Section>	sections;
+  std::vector<Symbol>	Symbols;
+};
+  int load_binary(std::string &fname, Binary *bin, Binary::BinaryType type);
+  void unload_binary(Binary *bin);
+
+#endif /* LOADER.H */
