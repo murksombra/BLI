@@ -30,4 +30,23 @@ static bfd* open_bfd(std::string &fname){
     fprintf(stderr, "Failed to open binary '%s' (%s)\n", fname.c_str(), bfd_errmsg(bfd_get_error()));
     return NULL;
   }
+  if(!bfd_check_format(bfd_h, bfd_object)){
+    fprintf(stderr, "File '%s' does not look like an executable (%s)\n",fname.c_str(), bfd_errmsg(bfd_get_error()));
+    return NULL;
+  }
+  ??
+
+    /* some versions of bfd_check_format pessimistically set a wrong_format
+     * error before detecting the format and the neglect to unset it once
+     * the format has been detected. We unset it mnually to prevent problems..
+     */
+    bfd_set_error(bfd_error_no_error);
+
+  if(bfd_get_flavour(bfd_h) == bfd_target_unknown_flavour){
+    fprintf(stderr, "Unrecognized format for binary '%s' (%s)\n", fname.c_str(), bfd_errmsg(bfd_get_error()));
+    return NULL;
+  }
+  return bfd_h;
 }
+
+
